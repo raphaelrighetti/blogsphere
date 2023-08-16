@@ -27,7 +27,8 @@ public class JwtService {
 				.sign(algorithm);
 	}
 	
-	public String getSubject(String token) {
+	public String getSubject(String header) {
+		String token = getTokenFromHeader(header);
 		Algorithm algorithm = Algorithm.HMAC512(secret);
 		
 		return JWT.require(algorithm)
@@ -39,6 +40,14 @@ public class JwtService {
 	
 	private Instant getExpiresAt() {
 		return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+	}
+	
+	private String getTokenFromHeader(String header) {
+		if (header == null) {
+			return null;
+		}
+		
+		return header.replace("Bearer ", "");
 	}
 	
 }

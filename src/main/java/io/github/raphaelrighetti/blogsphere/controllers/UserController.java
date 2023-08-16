@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.raphaelrighetti.blogsphere.models.dto.UserReadDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserUpdateDTO;
+import io.github.raphaelrighetti.blogsphere.services.CheckOwnerService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -24,34 +26,42 @@ import jakarta.validation.Valid;
 public class UserController {
 
 	@Autowired
-	private UserService service;
+	private UserService userService;
+	
+	@Autowired
+	private CheckOwnerService checkOwnerService;
 	
 	@GetMapping
 	public ResponseEntity<Page<UserReadDTO>> get(@PageableDefault Pageable pageable) {
-		Page<UserReadDTO> page = service.get(pageable);
+		Page<UserReadDTO> page = userService.get(pageable);
 		
 		return ResponseEntity.ok(page);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<UserReadDTO> getById(@PathVariable Long id) {
-		UserReadDTO responseDTO = service.getById(id);
+		UserReadDTO responseDTO = userService.getById(id);
 		
 		return ResponseEntity.ok(responseDTO);
 	}
 	
 	@PutMapping("{id}")
 	@Transactional
-	public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto) {
-		service.update(id, dto);
+	public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid UserUpdateDTO dto,
+			@RequestHeader("Authorization") String header) {
+		checkOwnerService.isOwner(id, header);
+		
+		userService.update(id, dto);
 		
 		return ResponseEntity.noContent().build();
 	}
 	
 	@DeleteMapping("{id}")
 	@Transactional
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		service.delete(id);
+	public ResponseEntity<Void> delete(@PathVariable Long id, @RequestHeader("Authorization") String header) {
+		checkOwnerService.isOwner(id, header);
+		
+		userService.delete(id);
 		
 		return ResponseEntity.noContent().build();
 	}
