@@ -1,6 +1,7 @@
 package io.github.raphaelrighetti.blogsphere.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,17 @@ public class CheckOwnerService {
 	@Autowired
 	private JwtService jwtService;
 	
-	public void isOwner(Long id, String token) {
+	public void checkOwner(Long id, String token) {
 		String subject = jwtService.getSubject(token);
 		UserDetails authenticatedUser = userService.loadUserByUsername(subject);
 		
+		if (authenticatedUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+			return;
+		}
+		
 		UserReadDTO user = userService.getById(id);
 		
-		if (!user.login().equals(authenticatedUser.getUsername())) {
+		if (!user.email().equals(authenticatedUser.getUsername())) {
 			throw new UnauthorizedException();
 		}
 	}

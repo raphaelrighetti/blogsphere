@@ -1,8 +1,8 @@
 package io.github.raphaelrighetti.blogsphere.models.dto;
 
-import jakarta.validation.constraints.Email;
+import io.github.raphaelrighetti.blogsphere.validations.constraints.UrlConstraint;
 import jakarta.validation.constraints.Size;
 
-public record UserUpdateDTO(@Email String login, @Size(min = 8) String password) {
+public record UserUpdateDTO(@Size(min = 3) String userName, @UrlConstraint String pictureUrl, String description) {
 
 }

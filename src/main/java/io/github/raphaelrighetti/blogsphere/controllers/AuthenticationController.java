@@ -1,4 +1,4 @@
-package io.github.raphaelrighetti.blogsphere.controllers.security;
+package io.github.raphaelrighetti.blogsphere.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserLoginDTO;
 import io.github.raphaelrighetti.blogsphere.services.JwtService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/login")
@@ -30,11 +31,10 @@ public class AuthenticationController {
 	private AuthenticationManager authenticationManager;
 	
 	@PostMapping
-	public ResponseEntity<AuthenticationDTO> authenticate(@RequestBody UserLoginDTO dto) {
-		UserDetails userDetails = userService.loadUserByUsername(dto.login());
-		
+	public ResponseEntity<AuthenticationDTO> authenticate(@RequestBody @Valid UserLoginDTO dto) {
+		UserDetails userDetails = userService.loadUserByUsername(dto.email());
 		Authentication auth = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(dto.login(), dto.password()));
+				.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
 		
 		if (auth.isAuthenticated()) {
 			String token = jwtService.createToken(userDetails);

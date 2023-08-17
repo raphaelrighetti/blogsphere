@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import io.github.raphaelrighetti.blogsphere.models.dto.UserSignUpDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,11 +36,29 @@ public class User implements UserDetails {
 	private Long id;
 	
 	@Column(unique = true, nullable = false)
-	private String login;
+	private String email;
 	@Column(nullable = false)
 	private String password;
+	@Column(unique = true, nullable = false)
+	private String publicUserName;
 	@Column(nullable = false)
 	private Boolean active = true;
+	
+	private String pictureUrl;
+	private String description;
+	
+	public User(UserSignUpDTO dto) {
+		email = dto.email();
+		publicUserName = dto.userName();
+		
+		if (dto.pictureUrl() != null) {
+			pictureUrl = dto.pictureUrl();
+		}
+		
+		if (dto.description() != null) {
+			description = dto.description();
+		}
+	}
 	
 	public void deactivate() {
 		active = false;
@@ -53,14 +72,12 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
 		return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
 	@Override
 	public String getUsername() {
-		
-		return login;
+		return email;
 	}
 	
 	@Override
@@ -70,19 +87,16 @@ public class User implements UserDetails {
 
 	@Override
 	public boolean isAccountNonExpired() {
-		
 		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		
 		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		
 		return true;
 	}
 

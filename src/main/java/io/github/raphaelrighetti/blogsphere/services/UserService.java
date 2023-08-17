@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import io.github.raphaelrighetti.blogsphere.exceptions.NotFoundException;
 import io.github.raphaelrighetti.blogsphere.models.User;
+import io.github.raphaelrighetti.blogsphere.models.dto.UserChangePasswordDTO;
+import io.github.raphaelrighetti.blogsphere.models.dto.UserListingDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserReadDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserSignUpDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserUpdateDTO;
@@ -26,9 +28,7 @@ public class UserService implements UserDetailsService {
 	private PasswordEncoder passwordEncoder;
 	
 	public UserReadDTO create(UserSignUpDTO dto) {
-		User user = new User();
-		
-		user.setLogin(dto.login());
+		User user = new User(dto);
 		user.setPassword(passwordEncoder.encode(dto.password()));
 		
 		repository.save(user);
@@ -36,8 +36,8 @@ public class UserService implements UserDetailsService {
 		return new UserReadDTO(user);
 	}
 	
-	public Page<UserReadDTO> get(Pageable pageable) {
-		return repository.findByActiveTrue(pageable).map(user -> new UserReadDTO(user));
+	public Page<UserListingDTO> get(Pageable pageable) {
+		return repository.findByActiveTrue(pageable).map(user -> new UserListingDTO(user));
 	}
 	
 	public UserReadDTO getById(Long id) {
@@ -57,13 +57,26 @@ public class UserService implements UserDetailsService {
 		
 		User user = repository.getReferenceById(id);
 		
-		if (dto.login() != null) {
-			user.setLogin(dto.login());
+		if (dto.userName() != null) {
+			user.setPublicUserName(dto.userName());
 		}
 		
-		if (dto.password() != null) {
-			user.setPassword(passwordEncoder.encode(dto.password()));
+		if (dto.pictureUrl() != null) {
+			user.setPictureUrl(dto.pictureUrl());
 		}
+		
+		if (dto.description() != null) {
+			user.setDescription(dto.description());
+		}
+	}
+	
+	public void changePassword(Long id, UserChangePasswordDTO dto) {
+		if (!repository.existsById(id)) {
+			throw new NotFoundException();
+		}
+		
+		User user = repository.getReferenceById(id);
+		user.setPassword(passwordEncoder.encode(dto.password()));
 	}
 	
 	public void delete(Long id) {
@@ -86,7 +99,7 @@ public class UserService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-		return repository.findByLogin(login);
+		return repository.findByEmail(login);
 	}
 
 }
