@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import io.github.raphaelrighetti.blogsphere.exceptions.UnauthorizedException;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserReadDTO;
+import io.github.raphaelrighetti.blogsphere.models.dto.UserTokenClaimsDTO;
 
 @Service
 public class CheckOwnerService {
@@ -18,7 +19,7 @@ public class CheckOwnerService {
 	private JwtService jwtService;
 	
 	public void checkOwner(Long id, String token) {
-		String subject = jwtService.getSubject(token);
+		String subject = jwtService.getClaims(token).email();
 		UserDetails authenticatedUser = userService.loadUserByUsername(subject);
 		
 		if (authenticatedUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -28,6 +29,18 @@ public class CheckOwnerService {
 		UserReadDTO user = userService.getById(id);
 		
 		if (!user.email().equals(authenticatedUser.getUsername())) {
+			throw new UnauthorizedException();
+		}
+	}
+	
+	public void checkOwnerUser(Long id, String token) {
+		UserTokenClaimsDTO claims = jwtService.getClaims(token);
+		
+		if (claims.role().equals("ROLE_ADMIN")) {
+			return;
+		}
+		
+		if (claims.id() != id) {
 			throw new UnauthorizedException();
 		}
 	}

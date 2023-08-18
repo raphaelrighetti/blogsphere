@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.raphaelrighetti.blogsphere.models.User;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserLoginDTO;
 import io.github.raphaelrighetti.blogsphere.services.JwtService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
@@ -37,7 +38,7 @@ public class AuthenticationController {
 				.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
 		
 		if (auth.isAuthenticated()) {
-			String token = jwtService.createToken(userDetails);
+			String token = jwtService.createToken((User) userDetails);
 			
 			return ResponseEntity.ok(new AuthenticationDTO(token));
 		}

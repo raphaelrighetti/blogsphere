@@ -29,7 +29,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 		String header = request.getHeader("Authorization");
 		
 		if (header != null) {
-			String subject = jwtService.getSubject(header);
+			String subject = jwtService.getClaims(header).email();
 			UserDetails userDetails = userService.loadUserByUsername(subject);
 			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 			

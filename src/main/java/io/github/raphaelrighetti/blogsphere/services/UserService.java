@@ -33,7 +33,7 @@ public class UserService implements UserDetailsService {
 	private PasswordEncoder passwordEncoder;
 	
 	public UserReadDTO create(UserSignUpDTO dto) {
-		Role userRole = roleRepository.getReferenceById(1L);
+		Role userRole = roleRepository.getReferenceById(2L);
 		
 		User user = new User(dto);
 		user.setPassword(passwordEncoder.encode(dto.password()));
