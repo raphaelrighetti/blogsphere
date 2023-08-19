@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import io.github.raphaelrighetti.blogsphere.services.JwtService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
+import io.github.raphaelrighetti.blogsphere.services.util.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

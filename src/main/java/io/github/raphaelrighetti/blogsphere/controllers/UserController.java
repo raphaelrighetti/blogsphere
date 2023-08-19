@@ -18,8 +18,8 @@ import io.github.raphaelrighetti.blogsphere.models.dto.UserChangePasswordDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserListingDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserReadDTO;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserUpdateDTO;
-import io.github.raphaelrighetti.blogsphere.services.CheckOwnerService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
+import io.github.raphaelrighetti.blogsphere.services.util.CheckOwnerService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -42,8 +42,7 @@ public class UserController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<UserReadDTO> getById(@PathVariable Long id, @RequestHeader("Authorization") String header) {
-		checkOwnerService.checkOwner(id, header);
-		UserReadDTO responseDTO = userService.getById(id);
+		UserReadDTO responseDTO = new UserReadDTO(userService.getById(id));
 		
 		return ResponseEntity.ok(responseDTO);
 	}

@@ -1,5 +1,5 @@
 alter table if exists users 
-		drop constraint if exists FKp56c1712k691lhsyewcssf40f;
+		drop constraint if exists USER_ROLE_ID;
 		
 drop table if exists roles cascade;
 drop table if exists users cascade;
@@ -23,6 +23,6 @@ create table users (
 );
 
 alter table if exists users 
-       add constraint ROLE_ID 
+       add constraint USER_ROLE_ID  
        foreign key (role_id) 
        references roles;

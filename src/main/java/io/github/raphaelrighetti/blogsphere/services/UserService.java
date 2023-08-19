@@ -48,14 +48,14 @@ public class UserService implements UserDetailsService {
 		return userRepository.findByActiveTrue(pageable).map(user -> new UserListingDTO(user));
 	}
 	
-	public UserReadDTO getById(Long id) {
+	public User getById(Long id) {
 		if (!userRepository.existsById(id)) {
 			throw new NotFoundException();
 		}
 		
 		User user = userRepository.getReferenceById(id);
 		
-		return new UserReadDTO(user);
+		return user;
 	}
 	
 	public void update(Long id, UserUpdateDTO dto) {

@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.github.raphaelrighetti.blogsphere.models.User;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserLoginDTO;
-import io.github.raphaelrighetti.blogsphere.services.JwtService;
 import io.github.raphaelrighetti.blogsphere.services.UserService;
+import io.github.raphaelrighetti.blogsphere.services.util.JwtService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/login")
-public class AuthenticationController {
+public class UserAuthenticationController {
 	
 	@Autowired
 	private UserService userService;

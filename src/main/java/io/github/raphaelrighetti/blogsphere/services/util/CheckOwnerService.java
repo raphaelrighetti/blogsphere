@@ -1,4 +1,4 @@
-package io.github.raphaelrighetti.blogsphere.services;
+package io.github.raphaelrighetti.blogsphere.services.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -6,8 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.github.raphaelrighetti.blogsphere.exceptions.UnauthorizedException;
-import io.github.raphaelrighetti.blogsphere.models.dto.UserReadDTO;
+import io.github.raphaelrighetti.blogsphere.models.User;
 import io.github.raphaelrighetti.blogsphere.models.dto.UserTokenClaimsDTO;
+import io.github.raphaelrighetti.blogsphere.services.UserService;
 
 @Service
 public class CheckOwnerService {
@@ -26,9 +27,9 @@ public class CheckOwnerService {
 			return;
 		}
 		
-		UserReadDTO user = userService.getById(id);
+		User user = userService.getById(id);
 		
-		if (!user.email().equals(authenticatedUser.getUsername())) {
+		if (!user.getEmail().equals(authenticatedUser.getUsername())) {
 			throw new UnauthorizedException();
 		}
 	}

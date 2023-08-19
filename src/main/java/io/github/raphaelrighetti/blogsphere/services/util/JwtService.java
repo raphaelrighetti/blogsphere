@@ -1,4 +1,4 @@
-package io.github.raphaelrighetti.blogsphere.services;
+package io.github.raphaelrighetti.blogsphere.services.util;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
