@@ -46,9 +46,7 @@ public class BlogService {
 			throw new NotFoundException();
 		}
 		
-		Blog blog = repository.getReferenceById(id);
-		
-		return blog;
+		return repository.getReferenceById(id);
 	}
 	
 	public void update(Long id, BlogUpdateDTO dto, String header) {

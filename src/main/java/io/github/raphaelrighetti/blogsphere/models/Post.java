@@ -1,7 +1,11 @@
 package io.github.raphaelrighetti.blogsphere.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.github.raphaelrighetti.blogsphere.models.dto.CommentReadDTO;
+import io.github.raphaelrighetti.blogsphere.models.dto.PostCreateDTO;
+import io.github.raphaelrighetti.blogsphere.models.dto.ReactionReadDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,8 +46,30 @@ public class Post {
 	@JoinColumn(name = "blog_id")
 	private Blog blog;
 	@OneToMany(mappedBy = "post")
-	private List<Reaction> likes;
+	private List<Reaction> reactions;
 	@OneToMany(mappedBy = "post")
 	private List<Comment> comments;
+	
+	public Post(PostCreateDTO dto) {
+		title = dto.title();
+		description = dto.description();
+		content = dto.content();
+	}
+	
+	public List<ReactionReadDTO> getReactionsDTO() {
+		if (reactions == null) {
+			return new ArrayList<>();
+		}
+		
+		return reactions.stream().map(reaction -> new ReactionReadDTO(reaction)).toList();
+	}
+	
+	public List<CommentReadDTO> getCommentsDTO() {
+		if (comments == null) {
+			return new ArrayList<>();
+		}
+		
+		return comments.stream().map(comment -> new CommentReadDTO(comment)).toList();
+	}
 
 }

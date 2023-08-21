@@ -53,9 +53,7 @@ public class UserService implements UserDetailsService {
 			throw new NotFoundException();
 		}
 		
-		User user = userRepository.getReferenceById(id);
-		
-		return user;
+		return userRepository.getReferenceById(id);
 	}
 	
 	public void update(Long id, UserUpdateDTO dto) {

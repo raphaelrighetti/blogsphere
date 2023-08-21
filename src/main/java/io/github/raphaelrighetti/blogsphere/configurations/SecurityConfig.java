@@ -27,7 +27,9 @@ public class SecurityConfig {
 				.addFilterBefore(securityFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeHttpRequests(auth -> {
 					auth.requestMatchers("/sign-up", "/sign-up/**", "/login", "/login/**").permitAll();
-					auth.requestMatchers(HttpMethod.GET, "/users", "/users/**", "/blogs","/blogs/**").permitAll();
+					auth.requestMatchers(HttpMethod.GET, "/users", "/users/**").permitAll();
+					auth.requestMatchers(HttpMethod.GET, "/blogs","/blogs/**").permitAll();
+					auth.requestMatchers(HttpMethod.GET, "/posts","/posts/**").permitAll();
 					auth.anyRequest().authenticated();
 				})
 				.build();

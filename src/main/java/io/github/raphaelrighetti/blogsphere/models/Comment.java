@@ -1,7 +1,9 @@
 package io.github.raphaelrighetti.blogsphere.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.github.raphaelrighetti.blogsphere.models.dto.CommentReadDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -46,5 +48,13 @@ public class Comment {
 	
 	@OneToMany(mappedBy = "parentComment")
 	private List<Comment> answers;
+	
+	public List<CommentReadDTO> getAnswersDTO() {
+		if (answers == null) {
+			return new ArrayList<>();
+		}
+		
+		return answers.stream().map(answer -> new CommentReadDTO(answer)).toList();
+	}
 	
 }
